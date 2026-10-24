@@ -1,0 +1,248 @@
+﻿<UserControl x:Class="MoneyDashboard.App.Views.SubscriptionView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:MoneyDashboard.App.Converters"
+             xmlns:behaviors="clr-namespace:MoneyDashboard.App.Behaviors">
+
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter
+            x:Key="BoolToVisibility" />
+
+        <converters:SubscriptionEnumToTextConverter
+        x:Key="SubscriptionEnumToTextConverter" />
+
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="24">
+
+            <TextBlock Text="サブスク管理"
+                       FontSize="28"
+                       FontWeight="Bold"
+                       Margin="0,0,0,20" />
+
+            <!-- 登録・編集 -->
+            <Border BorderBrush="#DDDDDD"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Padding="20"
+                    Margin="0,0,0,20">
+
+                <StackPanel>
+                    <TextBlock Text="{Binding FormTitle}"
+                               FontSize="20"
+                               FontWeight="Bold"
+                               Margin="0,0,0,16" />
+
+                    <TextBlock Text="サービス名" />
+                    <TextBox Text="{Binding ServiceName}"
+                             MaxLength="50"
+                             Margin="0,4,0,12" />
+
+                    <TextBlock Text="カテゴリ" />
+                    <ComboBox ItemsSource="{Binding Categories}"
+                              DisplayMemberPath="CategoryName"
+                              SelectedValuePath="CategoryId"
+                              SelectedValue="{Binding SelectedCategoryId}"
+                              Width="220"
+                              HorizontalAlignment="Left"
+                              Margin="0,4,0,12" />
+
+                    <TextBlock Text="支払金額" />
+                    <TextBox Text="{Binding PaymentAmount}"
+                             behaviors:NumericTextBoxBehavior.IsEnabled="True"
+                             Width="220"
+                             HorizontalAlignment="Left"
+                             Margin="0,4,0,12" />
+
+                    <TextBlock Text="支払周期" />
+                    <ComboBox ItemsSource="{Binding PaymentCycles}"
+                             SelectedItem="{Binding PaymentCycle}"
+                             Width="220"
+                             HorizontalAlignment="Left"
+                             Margin="0,4,0,12">
+
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding
+                                    Converter={StaticResource SubscriptionEnumToTextConverter}}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+
+                    </ComboBox>
+
+                    <TextBlock Text="支払月（年払いのみ）" />
+                    <TextBox Text="{Binding PaymentMonth}"
+                             behaviors:NumericTextBoxBehavior.IsEnabled="True"
+                             Width="120"
+                             HorizontalAlignment="Left"
+                             Margin="0,4,0,12" />
+
+                    <TextBlock Text="支払日（1～31）" />
+                    <TextBox Text="{Binding PaymentDay}"
+                             behaviors:NumericTextBoxBehavior.IsEnabled="True"
+                             Width="120"
+                             HorizontalAlignment="Left"
+                             Margin="0,4,0,12" />
+
+                    <TextBlock Text="利用状況" />
+                    <ComboBox ItemsSource="{Binding Statuses}"
+                              SelectedItem="{Binding Status}"
+                              Width="220"
+                              HorizontalAlignment="Left"
+                              Margin="0,4,0,12">
+
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding
+                                      Converter={StaticResource SubscriptionEnumToTextConverter}}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+
+                    </ComboBox>
+
+                    <TextBlock Text="備考" />
+                    <TextBox Text="{Binding Note}"
+                             MaxLength="200"
+                             Height="70"
+                             AcceptsReturn="True"
+                             TextWrapping="Wrap"
+                             Margin="0,4,0,16" />
+
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Right">
+
+                        <Button Content="クリア"
+                                Width="90"
+                                Height="36"
+                                Margin="0,0,8,0"
+                                Command="{Binding ClearCommand}"
+                                Visibility="{Binding IsRegisterMode,
+                                    Converter={StaticResource BoolToVisibility}}" />
+
+                        <Button Content="登録"
+                                Width="90"
+                                Height="36"
+                                Command="{Binding RegisterCommand}"
+                                Visibility="{Binding IsRegisterMode,
+                                    Converter={StaticResource BoolToVisibility}}" />
+
+                        <Button Content="キャンセル"
+                                Width="90"
+                                Height="36"
+                                Margin="0,0,8,0"
+                                Command="{Binding CancelEditCommand}"
+                                Visibility="{Binding IsEditMode,
+                                    Converter={StaticResource BoolToVisibility}}" />
+
+                        <Button Content="更新"
+                                Width="90"
+                                Height="36"
+                                Command="{Binding UpdateCommand}"
+                                Visibility="{Binding IsEditMode,
+                                    Converter={StaticResource BoolToVisibility}}" />
+
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- 月額換算合計 -->
+            <Border BorderBrush="#DDDDDD"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Padding="20"
+                    Margin="0,0,0,20">
+
+                <StackPanel>
+                    <TextBlock Text="利用中サブスクの月額換算合計"
+                               FontSize="16" />
+
+                    <TextBlock Text="{Binding ActiveMonthlyTotal,
+                                      StringFormat={}{0:N0} 円}"
+                               FontSize="26"
+                               FontWeight="Bold"
+                               Margin="0,8,0,8" />
+
+                    <TextBlock Text="{Binding ActiveSubscriptionCount,
+                                      StringFormat=利用中：{0}件}" />
+                </StackPanel>
+            </Border>
+
+            <!-- 一覧 -->
+            <TextBlock Text="サブスク一覧"
+                       FontSize="20"
+                       FontWeight="Bold"
+                       Margin="0,0,0,8" />
+
+            <DataGrid ItemsSource="{Binding Subscriptions}"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      CanUserAddRows="False"
+                      MinHeight="250">
+
+                <DataGrid.Columns>
+
+                    <DataGridTextColumn Header="サービス名"
+                                        Width="*"
+                                        Binding="{Binding ServiceName}" />
+
+                    <DataGridTextColumn Header="カテゴリ"
+                                        Width="110"
+                                        Binding="{Binding CategoryName}" />
+
+                    <DataGridTextColumn Header="支払金額"
+                                        Width="110"
+                                        Binding="{Binding PaymentAmount,
+                                            StringFormat={}{0:N0} 円}" />
+
+                    <DataGridTextColumn Header="周期"
+                                        Width="80"
+                                        Binding="{Binding PaymentCycleText}" />
+
+                    <DataGridTextColumn Header="支払日"
+                                        Width="110"
+                                        Binding="{Binding PaymentDateText}" />
+
+                    <DataGridTextColumn Header="月額換算"
+                                        Width="110"
+                                        Binding="{Binding MonthlyEquivalentAmount,
+                                            StringFormat={}{0:N0} 円}" />
+
+                    <DataGridTextColumn Header="状態"
+                                        Width="90"
+                                        Binding="{Binding StatusText}" />
+
+                    <DataGridTemplateColumn Header="操作"
+                                            Width="150">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+
+                                    <Button Content="編集"
+                                            Width="60"
+                                            Margin="0,0,5,0"
+                                            IsEnabled="{Binding DataContext.IsRegisterMode,
+                                                RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                            Command="{Binding DataContext.BeginEditCommand,
+                                                RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                            CommandParameter="{Binding SubscriptionId}" />
+
+                                    <Button Content="削除"
+                                            Width="60"
+                                            IsEnabled="{Binding DataContext.IsRegisterMode,
+                                                RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                            Command="{Binding DataContext.DeleteCommand,
+                                                RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                            CommandParameter="{Binding SubscriptionId}" />
+
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

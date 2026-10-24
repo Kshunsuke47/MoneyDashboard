@@ -1,0 +1,28 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Build
+**/bin/
+**/obj/
+
+# Test results
+TestResults/
+
+# Logs
+*.log
+logs/
+
+# SQLite / local data
+*.db
+*.db-shm
+*.db-wal
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Local / temporary
+*.tmp
+*.bak

@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="MoneyDashboard.App/MoneyDashboard.App.csproj" />
+  <Project Path="MoneyDashboard.Core/MoneyDashboard.Core.csproj" />
+  <Project Path="MoneyDashboard.Infrastructure/MoneyDashboard.Infrastructure.csproj" />
+  <Project Path="MoneyDashboard.Tests/MoneyDashboard.Tests.csproj" />
+</Solution>
